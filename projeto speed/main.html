@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="main.css">
+   
+    <title>site speed</title>
+
+</head>
+<body>
+    <div id="auth-container">
+        <form id="login-form" class="auth-form">
+            <h2>Login</h2>
+            <input type="email" id="login-email" placeholder="Email" required>
+            <input type="password" id="login-password" placeholder="Senha" required>
+            <button type="submit">Entrar</button>
+            <p id="login-message" class="message"></p>
+            <div class="switch-form">
+                <a href="#" id="switch-to-register">Não tem uma conta? Cadastre-se</a>
+            </div>
+        </form>
+
+        <form id="register-form" class="auth-form" style="display: none;">
+            <h2>Cadastro</h2>
+            <input type="email" id="register-email" placeholder="Email" required>
+            <input type="password" id="register-password" placeholder="Senha" required>
+            <input type="password" id="register-confirm-password" placeholder="Confirme a senha" required>
+            <button type="submit">Cadastrar</button>
+            <p id="register-message" class="message"></p>
+            <div class="switch-form">
+                <a href="#" id="switch-to-login">Já tem uma conta? Faça login</a>
+            </div>
+        </form>
+    </div>
+
+    <div id="content">
+        <nav>
+            <ul>
+                <li><a href="#video1">basicos</a></li>
+                <li><a href="hardware.html">hardware</a></li>
+                <li><a href="software.html">software</a></li>
+                <li><a href="superaquecimento.html">superaquecimento</a></li>
+            </ul>
+        </nav>
+
+        <div class="container">
+            <div id="basicos" class="video-container">
+                <video controls>
+                    <source src="videos/basico.mp4" type="video/mp4">
+                    Seu navegador não suporta o elemento de vídeo.
+                </video>
+                <div class="video-info">
+                    <h2>basicos</h2>
+                    <p>esses podem ser problemas basicos que podem estar afetando você</p>
+                </div>
+            </div>
+
+            <div id="video2" class="video-container">
+                <video controls>
+                    <source src="https://example.com/video2.mp4" type="video/mp4">
+                    Seu navegador não suporta o elemento de vídeo.
+                </video>
+                <div class="video-info">
+                    <h2>Vida Urbana</h2>
+                    <p>Neste vídeo, exploramos o ritmo frenético da vida urbana. Time-lapses de ruas movimentadas, metrôs cheios e arranha-céus iluminados retratam a energia vibrante das grandes cidades.</p>
+                </div>
+            </div>
+
+            <div id="video3" class="video-container">
+                <video controls>
+                    <source src="https://example.com/video3.mp4" type="video/mp4">
+                    Seu navegador não suporta o elemento de vídeo.
+                </video>
+                <div class="video-info">
+                    <h2>Aventuras Subaquáticas</h2>
+                    <p>O último vídeo nos leva a uma jornada subaquática fascinante. Filmagens de recifes de coral coloridos, cardumes de peixes exóticos e criaturas marinhas misteriosas revelam as maravilhas ocultas dos oceanos.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Função para alternar entre os formulários de login e cadastro
+        function toggleForms() {
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            loginForm.style.display = loginForm.style.display === 'none' ? 'block' : 'none';
+            registerForm.style.display = registerForm.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Event listeners para alternar entre os formulários
+        document.getElementById('switch-to-register').addEventListener('click', toggleForms);
+        document.getElementById('switch-to-login').addEventListener('click', toggleForms);
+
+        // Função para salvar usuários no localStorage
+        function saveUser(email, password) {
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+            users[email] = password;
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+
+        // Função para verificar se um usuário existe
+        function checkUser(email, password) {
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+            return users[email] === password;
+        }
+
+        // Event listener para o formulário de cadastro
+        document.getElementById('register-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm-password').value;
+            const messageElement = document.getElementById('register-message');
+
+            if (password !== confirmPassword) {
+                messageElement.textContent = 'As senhas não coincidem.';
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+            if (users[email]) {
+                messageElement.textContent = 'Este email já está cadastrado.';
+                return;
+            }
+
+            saveUser(email, password);
+            messageElement.textContent = 'Cadastro realizado com sucesso!';
+            messageElement.style.color = 'green';
+            setTimeout(() => {
+                toggleForms();
+                document.getElementById('login-email').value = email;
+            }, 1500);
+        });
+
+        // Event listener para o formulário de login
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const messageElement = document.getElementById('login-message');
+
+            if (checkUser(email, password)) {
+                document.getElementById('auth-container').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+            } else {
+                messageElement.textContent = 'Email ou senha incorretos.';
+            }
+        });
+    </script>
+</body>
+</html>
